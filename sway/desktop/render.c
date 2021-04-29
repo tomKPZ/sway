@@ -1,5 +1,6 @@
 #define _POSIX_C_SOURCE 200809L
 #include <assert.h>
+#include <drm_fourcc.h>
 #include <GLES2/gl2.h>
 #include <stdlib.h>
 #include <strings.h>
@@ -822,6 +823,10 @@ static void render_containers_tabbed(struct sway_output *output,
 		render_container(output, damage, current,
 				parent->focused || current->current.focused);
 	}
+	/* printf("putting rect\n"); */
+	/* struct wlr_box box = {.x = 0, .y = 0, .width = 100, .height = 100}; */
+	/* float color[4] = {1,1,1,1}; */
+	/* render_rect(output, damage, &box, color); */
 }
 
 /**
@@ -939,7 +944,19 @@ static void render_workspace(struct sway_output *output,
 		.focused = focused,
 		.active_child = ws->current.focused_inactive_child,
 	};
+
+	void* data2 = malloc(4*100*100);
+	struct wlr_renderer *renderer = wlr_backend_get_renderer(output->wlr_output->backend);
+	assert(renderer);
+	wlr_renderer_read_pixels(renderer, DRM_FORMAT_ARGB8888, NULL, 4*100, 100, 100, 10, 10, 0,0, data2);
+	struct wlr_texture* texture = wlr_texture_from_pixels(renderer, DRM_FORMAT_ARGB8888, 4*100, 100, 100, data2);
+
 	render_containers(output, damage, &data);
+
+	// render_texture(wlr_output, output_damage, texture,
+	float proj[9] = {1,0,0,0,1,0,0,0,1};
+	wlr_render_texture(renderer, texture, proj, 10, 10, 1);
+	free(data2);
 }
 
 static void render_floating_container(struct sway_output *soutput,
