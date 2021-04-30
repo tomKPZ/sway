@@ -437,7 +437,7 @@ static void render_titlebar(struct sway_output *output,
 	enum alignment title_align = config->title_align;
 
 	// Single pixel bar above title
-	memcpy(&color, colors->border, sizeof(float) * 4);
+	memcpy(&color, colors->child_border, sizeof(float) * 4);
 	premultiply_alpha(color, con->alpha);
 	box.x = x;
 	box.y = y;
@@ -669,6 +669,16 @@ static void render_titlebar(struct sway_output *output,
 		box.width += box.x - right_rx;
 		box.x = right_rx;
 	}
+	render_rect(output, output_damage, &box, color);
+
+	// My custom indicator
+	memcpy(&color, colors->border, sizeof(float) * 4);
+	premultiply_alpha(color, con->alpha);
+	box.x = x + titlebar_h_padding;
+	box.y = y + container_titlebar_height() - titlebar_v_padding;
+	box.width = width - 2 * titlebar_h_padding;
+	box.height = titlebar_v_padding;
+	scale_box(&box, output_scale);
 	render_rect(output, output_damage, &box, color);
 }
 
