@@ -439,36 +439,36 @@ static void render_titlebar(struct sway_output *output,
 	// Single pixel bar above title
 	memcpy(&color, colors->border, sizeof(float) * 4);
 	premultiply_alpha(color, con->alpha);
-	box.x = x;
+	box.x = x + titlebar_border_thickness;
 	box.y = y;
-	box.width = width;
+	box.width = width - titlebar_border_thickness * 2;
 	box.height = titlebar_border_thickness;
 	scale_box(&box, output_scale);
-	render_rect(output, output_damage, &box, color);
+	render_rect(output, output_damage, &box, colors->background);
 
 	// Single pixel bar below title
-	box.x = x;
+	box.x = x + titlebar_border_thickness;
 	box.y = y + container_titlebar_height() - titlebar_border_thickness;
-	box.width = width;
+	box.width = width - titlebar_border_thickness * 2;
 	box.height = titlebar_border_thickness;
 	scale_box(&box, output_scale);
 	render_rect(output, output_damage, &box, color);
 
 	// Single pixel left edge
 	box.x = x;
-	box.y = y + titlebar_border_thickness;
+	box.y = y;
 	box.width = titlebar_border_thickness;
-	box.height = container_titlebar_height() - titlebar_border_thickness * 2;
+	box.height = container_titlebar_height();
 	scale_box(&box, output_scale);
-	render_rect(output, output_damage, &box, color);
+	render_rect(output, output_damage, &box, colors->background);
 
 	// Single pixel right edge
 	box.x = x + width - titlebar_border_thickness;
-	box.y = y + titlebar_border_thickness;
+	box.y = y;
 	box.width = titlebar_border_thickness;
-	box.height = container_titlebar_height() - titlebar_border_thickness * 2;
+	box.height = container_titlebar_height();
 	scale_box(&box, output_scale);
-	render_rect(output, output_damage, &box, color);
+	render_rect(output, output_damage, &box, colors->background);
 
 	int inner_x = x - output_x + titlebar_h_padding;
 	int bg_y = y + titlebar_border_thickness;
